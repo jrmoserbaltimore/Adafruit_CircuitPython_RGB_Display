@@ -15,14 +15,13 @@ try:
     import struct
 except ImportError:
     import ustruct as struct
-
-from adafruit_rgb_display.rgb import DisplaySPI
+from rgb_display.rgb import DisplayDevice
 
 __version__ = "0.0.0-auto.0"
-__repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_RGB_Display.git"
+__repo__ = "https://github.com/jrmoser/RGB_Display.git"
 
 
-class ILI9341(DisplaySPI):
+class ILI9341(DisplayDevice):
     """
     A simple driver for the ILI9341/ILI9340-based displays.
 
@@ -78,27 +77,19 @@ class ILI9341(DisplaySPI):
     # pylint: disable-msg=too-many-arguments
     def __init__(
         self,
-        spi,
+        port,
         dc,
-        cs,
         rst=None,
         width=240,
         height=320,
-        baudrate=16000000,
-        polarity=0,
-        phase=0,
         rotation=0,
     ):
         super().__init__(
-            spi,
+            port,
             dc,
-            cs,
             rst=rst,
             width=width,
             height=height,
-            baudrate=baudrate,
-            polarity=polarity,
-            phase=phase,
             rotation=rotation,
         )
         self._scroll = 0

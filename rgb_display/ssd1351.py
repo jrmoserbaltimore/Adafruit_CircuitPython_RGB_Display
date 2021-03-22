@@ -10,11 +10,14 @@ A simple driver for the SSD1351-based displays.
 
 * Author(s): Radomir Dopieralski, Michael McWethy
 """
-from micropython import const
-from adafruit_rgb_display.rgb import DisplaySPI
+try:
+    from micropython import const
+except ImportError:
+    def const(n): return n
+from rgb_display.rgb import DisplayDevice
 
 __version__ = "0.0.0-auto.0"
-__repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_RGB_Display.git"
+__repo__ = "https://github.com/jrmoser/RGB_Display.git"
 
 _SETCOLUMN = const(0x15)
 _SETROW = const(0x75)
@@ -49,7 +52,7 @@ _STOPSCROLL = const(0x9E)
 _STARTSCROLL = const(0x9F)
 
 
-class SSD1351(DisplaySPI):
+class SSD1351(DisplayDevice):
     """
     A simple driver for the SSD1351-based displays.
 
@@ -99,32 +102,23 @@ class SSD1351(DisplaySPI):
     # pylint: disable-msg=useless-super-delegation, too-many-arguments
     def __init__(
         self,
-        spi,
+        port,
         dc,
-        cs,
         rst=None,
         width=128,
         height=128,
-        baudrate=16000000,
-        polarity=0,
-        phase=0,
         *,
         x_offset=0,
         y_offset=0,
         rotation=0
     ):
-        if baudrate > 16000000:  # Limit to Display Max Baudrate
-            baudrate = 16000000
+        # TODO:  Limit to 16000000 baud rate?
         super().__init__(
-            spi,
+            port,
             dc,
-            cs,
             rst,
             width,
             height,
-            baudrate=baudrate,
-            polarity=polarity,
-            phase=phase,
             x_offset=x_offset,
             y_offset=y_offset,
             rotation=rotation,

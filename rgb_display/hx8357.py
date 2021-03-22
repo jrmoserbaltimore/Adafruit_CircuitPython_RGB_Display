@@ -10,11 +10,14 @@ A simple driver for the HX8357-based displays.
 
 * Author(s): Melissa LeBlanc-Williams
 """
-from micropython import const
-from adafruit_rgb_display.rgb import DisplaySPI
+try:
+    from micropython import const
+except ImportError:
+    def const(n): return n
+from rgb_display.rgb import DisplayDevice
 
 __version__ = "0.0.0-auto.0"
-__repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_RGB_Display.git"
+__repo__ = "https://github.com/jrmoser/RGB_Display.git"
 
 _SWRESET = const(0x01)
 _SLPOUT = const(0x11)
@@ -42,7 +45,7 @@ _SETPANEL = const(0xCC)
 _SETGAMMA = const(0xE0)
 
 
-class HX8357(DisplaySPI):
+class HX8357(DisplayDevice):
     """
     A simple driver for the HX8357-based displays.
 
@@ -94,26 +97,18 @@ class HX8357(DisplaySPI):
     # pylint: disable-msg=useless-super-delegation, too-many-arguments
     def __init__(
         self,
-        spi,
+        port,
         dc,
-        cs,
         rst=None,
         width=480,
         height=320,
-        baudrate=16000000,
-        polarity=0,
-        phase=0,
         rotation=0,
     ):
         super().__init__(
-            spi,
+            port,
             dc,
-            cs,
             rst,
             width,
             height,
-            baudrate=baudrate,
-            polarity=polarity,
-            phase=phase,
             rotation=rotation,
         )

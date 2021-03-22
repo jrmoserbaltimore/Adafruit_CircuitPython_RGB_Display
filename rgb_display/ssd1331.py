@@ -10,13 +10,14 @@ A simple driver for the SSD1331-based displays.
 
 * Author(s): Radomir Dopieralski, Michael McWethy
 """
-
-from micropython import const
-from adafruit_rgb_display.rgb import DisplaySPI
+try:
+    from micropython import const
+except ImportError:
+    def const(n): return n
+from rgb_display.rgb import DisplayDevice
 
 __version__ = "0.0.0-auto.0"
-__repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_RGB_Display.git"
-
+__repo__ = "https://github.com/jrmoser/RGB_Display.git"
 
 _DRAWLINE = const(0x21)
 _DRAWRECT = const(0x22)
@@ -50,7 +51,7 @@ _VCOMH = const(0xBE)
 _LOCK = const(0xFD)
 
 
-class SSD1331(DisplaySPI):
+class SSD1331(DisplayDevice):
     """
     A simple driver for the SSD1331-based displays.
 
@@ -107,39 +108,31 @@ class SSD1331(DisplaySPI):
     # super required to allow override of default values
     def __init__(
         self,
-        spi,
+        port,
         dc,
-        cs,
         rst=None,
         width=96,
         height=64,
-        baudrate=16000000,
-        polarity=0,
-        phase=0,
         *,
         rotation=0
     ):
         super().__init__(
-            spi,
+            port,
             dc,
-            cs,
             rst,
             width,
             height,
-            baudrate=baudrate,
-            polarity=polarity,
-            phase=phase,
             rotation=rotation,
         )
 
     # pylint: disable=no-member
     def write(self, command=None, data=None):
         """write procedure specific to SSD1331"""
-        self.dc_pin.value = command is None
-        with self.spi_device as spi:
+        command is None ? self.dc_pin.on() : self.dc_pin.off()
+        with self.port as port:
             if command is not None:
-                spi.write(bytearray([command]))
+                port.send(bytearray([command]))
                 print(bytearray([command]))
             if data is not None:
-                spi.write(data)
+                port.send(data)
                 print(data)

@@ -15,11 +15,14 @@ try:
     import struct
 except ImportError:
     import ustruct as struct
-from micropython import const
-from adafruit_rgb_display.rgb import DisplaySPI
+try:
+    from micropython import const
+except ImportError:
+    def const(n): return n
+from rgb_display.rgb import DisplayDevice
 
 __version__ = "0.0.0-auto.0"
-__repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_RGB_Display.git"
+__repo__ = "https://github.com/jrmoser/RGB_Display.git"
 
 _NOP = const(0x00)
 _SWRESET = const(0x01)
@@ -68,7 +71,7 @@ _GMCTRP1 = const(0xE0)
 _GMCTRN1 = const(0xE1)
 
 
-class ST7789(DisplaySPI):
+class ST7789(DisplayDevice):
     """
     A simple driver for the ST7789-based displays.
 
@@ -98,30 +101,22 @@ class ST7789(DisplaySPI):
     # pylint: disable-msg=useless-super-delegation, too-many-arguments
     def __init__(
         self,
-        spi,
+        port,
         dc,
-        cs,
         rst=None,
         width=240,
         height=320,
-        baudrate=16000000,
-        polarity=0,
-        phase=0,
         *,
         x_offset=0,
         y_offset=0,
         rotation=0
     ):
         super().__init__(
-            spi,
+            device,
             dc,
-            cs,
             rst,
             width,
             height,
-            baudrate=baudrate,
-            polarity=polarity,
-            phase=phase,
             x_offset=x_offset,
             y_offset=y_offset,
             rotation=rotation,

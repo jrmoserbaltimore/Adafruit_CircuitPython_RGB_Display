@@ -1,26 +1,26 @@
 
 .. If you created a package, create one automodule per module in the package.
 
-.. automodule:: adafruit_rgb_display.rgb
+.. automodule:: rgb_display.rgb
    :members:
 
-.. automodule:: adafruit_rgb_display.hx8353
+.. automodule:: rgb_display.hx8353
   :members:
 
-.. automodule:: adafruit_rgb_display.ili9341
+.. automodule:: rgb_display.ili9341
    :members:
 
-.. automodule:: adafruit_rgb_display.s6d02a1
+.. automodule:: rgb_display.s6d02a1
   :members:
 
-.. automodule:: adafruit_rgb_display.ssd1331
+.. automodule:: rgb_display.ssd1331
    :members:
 
-.. automodule:: adafruit_rgb_display.ssd1351
+.. automodule:: rgb_display.ssd1351
   :members:
 
-.. automodule:: adafruit_rgb_display.st7735
+.. automodule:: rgb_display.st7735
   :members:
 
-.. automodule:: adafruit_rgb_display.st7789
+.. automodule:: rgb_display.st7789
   :members:

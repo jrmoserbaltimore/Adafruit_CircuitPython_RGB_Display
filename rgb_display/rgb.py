@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-`adafruit_rgb_display.rgb`
+`rgb_display.rgb`
 ====================================================
 
 Base class for all RGB Display devices
@@ -22,10 +22,8 @@ try:
 except ImportError:
     import ustruct as struct
 
-import adafruit_bus_device.spi_device as spi_device
-
 __version__ = "0.0.0-auto.0"
-__repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_RGB_Display.git"
+__repo__ = "https://github.com/jrmoserbaltimore/RGB_Display.git"
 
 # This is the size of the buffer to be used for fill operations, in 16-bit
 # units.
@@ -242,34 +240,28 @@ class Display:  # pylint: disable-msg=no-member
         self._rotation = val
 
 
-class DisplaySPI(Display):
-    """Base class for SPI type devices"""
+class DisplayDevice(Display):
+    """Base class for devices"""
 
     # pylint: disable-msg=too-many-arguments
     def __init__(
         self,
-        spi,
+        port,
         dc,
-        cs,
         rst=None,
         width=1,
         height=1,
-        baudrate=12000000,
-        polarity=0,
-        phase=0,
         *,
         x_offset=0,
         y_offset=0,
         rotation=0
     ):
-        self.spi_device = spi_device.SPIDevice(
-            spi, cs, baudrate=baudrate, polarity=polarity, phase=phase
-        )
+        self.port = port
         self.dc_pin = dc
         self.rst = rst
-        self.dc_pin.switch_to_output(value=0)
+        self.dc_pin.off()
         if self.rst:
-            self.rst.switch_to_output(value=0)
+            self.rst.off()
             self.reset()
         self._X_START = x_offset  # pylint: disable=invalid-name
         self._Y_START = y_offset  # pylint: disable=invalid-name
@@ -279,30 +271,28 @@ class DisplaySPI(Display):
 
     def reset(self):
         """Reset the device"""
-        self.rst.value = 0
+        self.rst.off()
         time.sleep(0.050)  # 50 milliseconds
-        self.rst.value = 1
+        self.rst.on()
         time.sleep(0.050)  # 50 milliseconds
 
     # pylint: disable=no-member
     def write(self, command=None, data=None):
-        """SPI write to the device: commands and data"""
+        """write to the device: commands and data"""
         if command is not None:
-            self.dc_pin.value = 0
-            with self.spi_device as spi:
-                spi.write(bytearray([command]))
+            self.dc_pin.off()
+            self.port.send(bytearray([command]))
         if data is not None:
-            self.dc_pin.value = 1
-            with self.spi_device as spi:
-                spi.write(data)
+            self.dc_pin.on()
+            self.port.send(data)
 
     def read(self, command=None, count=0):
-        """SPI read from device with optional command"""
+        """read from device with optional command"""
         data = bytearray(count)
-        self.dc_pin.value = 0
-        with self.spi_device as spi:
+        self.dc_pin.off()
+        with self.port as port:
             if command is not None:
-                spi.write(bytearray([command]))
+                port.send(bytearray([command]))
             if count:
-                spi.readinto(data)
+                port.readinto(data)
         return data

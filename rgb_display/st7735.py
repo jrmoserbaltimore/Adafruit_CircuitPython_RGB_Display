@@ -15,11 +15,14 @@ try:
     import struct
 except ImportError:
     import ustruct as struct
-from micropython import const
-from adafruit_rgb_display.rgb import DisplaySPI
+try:
+    from micropython import const
+except ImportError:
+    def const(n): return n
+from rgb_display.rgb import DisplayDevice
 
 __version__ = "0.0.0-auto.0"
-__repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_RGB_Display.git"
+__repo__ = "https://github.com/jrmoser/RGB_Display.git"
 
 _NOP = const(0x00)
 _SWRESET = const(0x01)
@@ -68,20 +71,10 @@ _GMCTRP1 = const(0xE0)
 _GMCTRN1 = const(0xE1)
 
 
-class ST7735(DisplaySPI):
+class ST7735(DisplayDevice):
     """
     A simple driver for the ST7735-based displays.
 
-    >>> import busio
-    >>> import digitalio
-    >>> import board
-    >>> from adafruit_rgb_display import color565
-    >>> import adafruit_rgb_display.st7735 as st7735
-    >>> spi = busio.SPI(clock=board.SCK, MOSI=board.MOSI, MISO=board.MISO)
-    >>> display = st7735.ST7735(spi, cs=digitalio.DigitalInOut(board.GPIO0),
-    ...    dc=digitalio.DigitalInOut(board.GPIO15), rst=digitalio.DigitalInOut(board.GPIO16))
-    >>> display.fill(0x7521)
-    >>> display.pixel(64, 64, 0)
     """
 
     _COLUMN_SET = _CASET
@@ -123,30 +116,22 @@ class ST7735(DisplaySPI):
     # pylint: disable-msg=useless-super-delegation, too-many-arguments
     def __init__(
         self,
-        spi,
+        port,
         dc,
-        cs,
         rst=None,
         width=128,
         height=128,
-        baudrate=16000000,
-        polarity=0,
-        phase=0,
         *,
         x_offset=0,
         y_offset=0,
         rotation=0
     ):
         super().__init__(
-            spi,
+            port,
             dc,
-            cs,
             rst,
             width,
             height,
-            baudrate=baudrate,
-            polarity=polarity,
-            phase=phase,
             x_offset=x_offset,
             y_offset=y_offset,
             rotation=rotation,
@@ -185,15 +170,11 @@ class ST7735R(ST7735):
     # pylint: disable-msg=useless-super-delegation, too-many-arguments
     def __init__(
         self,
-        spi,
+        port,
         dc,
-        cs,
         rst=None,
         width=128,
         height=160,
-        baudrate=16000000,
-        polarity=0,
-        phase=0,
         *,
         x_offset=0,
         y_offset=0,
@@ -202,15 +183,11 @@ class ST7735R(ST7735):
     ):
         self._bgr = bgr
         super().__init__(
-            spi,
+            port,
             dc,
-            cs,
             rst,
             width,
             height,
-            baudrate=baudrate,
-            polarity=polarity,
-            phase=phase,
             x_offset=x_offset,
             y_offset=y_offset,
             rotation=rotation,
@@ -270,16 +247,12 @@ class ST7735S(ST7735):
     # pylint: disable-msg=useless-super-delegation, too-many-arguments
     def __init__(
         self,
-        spi,
+        port,
         dc,
-        cs,
         bl,
         rst=None,
         width=128,
         height=160,
-        baudrate=16000000,
-        polarity=0,
-        phase=0,
         *,
         x_offset=2,
         y_offset=1,
@@ -287,17 +260,13 @@ class ST7735S(ST7735):
     ):
         self._bl = bl
         # Turn on backlight
-        self._bl.switch_to_output(value=1)
+        self._bl.on()
         super().__init__(
-            spi,
+            port,
             dc,
-            cs,
             rst,
             width,
             height,
-            baudrate=baudrate,
-            polarity=polarity,
-            phase=phase,
             x_offset=x_offset,
             y_offset=y_offset,
             rotation=rotation,

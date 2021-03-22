@@ -23,18 +23,18 @@ with open(path.join(here, "README.rst"), encoding="utf-8") as f:
     long_description = f.read()
 
 setup(
-    name="adafruit-circuitpython-rgb-display",
+    name="rgb-display",
     use_scm_version=True,
     setup_requires=["setuptools_scm"],
-    description="CircuitPython library for RGB displays.",
+    description="Portable library for RGB displays.",
     long_description=long_description,
     long_description_content_type="text/x-rst",
     # The project's main homepage.
-    url="https://github.com/adafruit/Adafruit_CircuitPython_RGB_Display",
+    url="https://github.com/jrmoserbaltimore/RGB_Display",
     # Author details
-    author="Radomir Dopieralski, Michael McWethy",
-    author_email="circuitpython@adafruit.com",
-    install_requires=["Adafruit-Blinka", "adafruit-circuitpython-busdevice"],
+    author="Radomir Dopieralski, Michael McWethy, John Moser",
+    author_email="john.r.moser@gmail.com",
+    install_requires=[],
     # Choose your license
     license="MIT",
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -47,11 +47,17 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: Implementation :: CPython",
+        "Programming Language :: Python :: Implementation :: MicroPython",
     ],
     # What does your project relate to?
     keywords="adafruit rgb display hx8353 ili9341 s6d02A1 ssd1331 ssd1351 st7735"
     "hardware micropython circuitpython",
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
-    packages=["adafruit_rgb_display"],
+    packages=["rgb_display"],
 )

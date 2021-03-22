@@ -11,11 +11,14 @@ A simple driver for the S6D02A1-based displays.
 * Author(s): Radomir Dopieralski, Michael McWethy
 """
 
-from micropython import const
-from adafruit_rgb_display.rgb import DisplaySPI
+try:
+    from micropython import const
+except ImportError:
+    def const(n): return n
+from rgb_display.rgb import DisplayDevice
 
 __version__ = "0.0.0-auto.0"
-__repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_RGB_Display.git"
+__repo__ = "https://github.com/jrmoser/RGB_Display.git"
 
 _SWRESET = const(0x01)
 _DISPON = const(0x29)
@@ -28,7 +31,7 @@ _COLMOD = const(0x3A)
 _MADCTL = const(0x36)
 
 
-class S6D02A1(DisplaySPI):
+class S6D02A1(DisplayDevice):
     """
     A simple driver for the S6D02A1-based displays.
 
@@ -59,5 +62,20 @@ class S6D02A1(DisplaySPI):
     _ENCODE_POS = ">HH"
 
     # pylint: disable-msg=useless-super-delegation, too-many-arguments
-    def __init__(self, spi, dc, cs, rst=None, width=128, height=160, rotation=0):
-        super().__init__(spi, dc, cs, rst, width, height, rotation)
+    def __init__(
+        self,
+        port,
+        dc,
+        rst=None,
+        width=128,
+        height=160,
+        rotation=0,
+    ):
+        super().__init__(
+            port,
+            dc,
+            rst,
+            width,
+            height,
+            rotation=rotation,
+        )
