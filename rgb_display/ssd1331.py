@@ -128,7 +128,10 @@ class SSD1331(DisplayDevice):
     # pylint: disable=no-member
     def write(self, command=None, data=None):
         """write procedure specific to SSD1331"""
-        command is None ? self.dc_pin.on() : self.dc_pin.off()
+        if command is None:
+            self.dc_pin.on()
+        else:
+            self.dc_pin.off()
         with self.port as port:
             if command is not None:
                 port.send(bytearray([command]))
