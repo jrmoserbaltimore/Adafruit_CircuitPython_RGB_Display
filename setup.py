@@ -34,7 +34,7 @@ setup(
     # Author details
     author="Radomir Dopieralski, Michael McWethy",
     author_email="circuitpython@adafruit.com",
-    install_requires=["Adafruit-Blinka", "adafruit-circuitpython-busdevice"],
+    install_requires=["Adafruit-Blinka", "adafruit-circuitpython-busdevice", "rgb_display"],
     # Choose your license
     license="MIT",
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers

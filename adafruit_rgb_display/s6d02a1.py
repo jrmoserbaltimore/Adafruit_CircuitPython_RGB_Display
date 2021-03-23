@@ -11,24 +11,13 @@ A simple driver for the S6D02A1-based displays.
 * Author(s): Radomir Dopieralski, Michael McWethy
 """
 
-from micropython import const
-from adafruit_rgb_display.rgb import DisplaySPI
+from adafruit_rgb_display.rgb import translate_circuitpython
+from rgb_display import S6D02A1 as rgb_S6D02A1
 
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_RGB_Display.git"
 
-_SWRESET = const(0x01)
-_DISPON = const(0x29)
-_SLEEPOUT = const(0x11)
-_CASET = const(0x2A)
-_PASET = const(0x2B)
-_RAMWR = const(0x2C)
-_RAMRD = const(0x2E)
-_COLMOD = const(0x3A)
-_MADCTL = const(0x36)
-
-
-class S6D02A1(DisplaySPI):
+class S6D02A1(rgb_S6D02A1):
     """
     A simple driver for the S6D02A1-based displays.
 
@@ -44,20 +33,17 @@ class S6D02A1(DisplaySPI):
     >>> display.pixel(64, 64, 0)
     """
 
-    _COLUMN_SET = _CASET
-    _PAGE_SET = _PASET
-    _RAM_WRITE = _RAMWR
-    _RAM_READ = _RAMRD
-    _INIT = (
-        (_SWRESET, None),
-        (_SLEEPOUT, None),
-        (_MADCTL, b"\x10"),  # bottom-top
-        (_COLMOD, b"\x05"),  # RGB565 pixel format
-        (_DISPON, None),
-    )
-    _ENCODE_PIXEL = ">H"
-    _ENCODE_POS = ">HH"
-
     # pylint: disable-msg=useless-super-delegation, too-many-arguments
     def __init__(self, spi, dc, cs, rst=None, width=128, height=160, rotation=0):
-        super().__init__(spi, dc, cs, rst, width, height, rotation)
+        (spi_device, dc_pin, rst_pin) = translate_circuitpython(
+            spi, dc, cs, rst, baudrate, polarity, phase
+        )
+        super().__init__(
+                spi_device,
+                dc_pin,
+                rst_pin,
+                width,
+                height,
+                x_offset=x_offset,
+                y_offset=y_offset,
+                rotation=rotation)
